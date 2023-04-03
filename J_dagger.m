@@ -5,14 +5,14 @@ function [J_dagger] = J_dagger(J)
     m = size(J, 1);
     n = size(J, 2);
     
+%     if J is square -> true inverse
+    if n == m
+        J_dagger = inv(J);
 %     redundant or 'fat' case -> right inverse
-    if n > m
+    elseif n > m
         J_dagger = J' / (J * J');
 %     'tall' case -> left inverse
     elseif n < m
         J_dagger = (J' * J) \ J';
-%     if J is square -> true inverse
-    elseif n == m
-        J_dagger = inv(J);
     end
 end

@@ -49,13 +49,8 @@ function animate_joint_goals(robot_name, theta_series, show_ellipsoids, num_step
             cla;
             [FK_solution_space, ~, ~] = FK_space(M, S_mat, current_thetas, false, true, M_intermediates, false);
             J_space = SpaceJacobian(S_mat, current_thetas);
-            if show_ellipsoids == true
-                ellipsoid_plot_angular(J_space, FK_solution_space(1:3,4), 0.25);
-                ellipsoid_plot_linear(J_space, FK_solution_space(1:3,4), 0.5);
-            else
-                ellipsoid_plot_angular(J_space, FK_solution_space(1:3,4), 0.25, false);
-                ellipsoid_plot_linear(J_space, FK_solution_space(1:3,4), 0.5, false);
-            end
+            ellipsoid_plot_angular(J_space, FK_solution_space(1:3,4), 0.25, show_ellipsoids);
+            ellipsoid_plot_linear(J_space, FK_solution_space(1:3,4), 0.5, show_ellipsoids);
             pause(delay);
     
             current_thetas = current_thetas + delta_theta;

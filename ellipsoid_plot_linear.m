@@ -35,7 +35,7 @@ function [eigenvalues, V] = ellipsoid_plot_linear(J, origin, delta, show_ellipso
 
     if show_ellipsoids == true
         [x, y, z] = ellipsoid(origin(1), origin(2), origin(3), delta * sqrt(eigenvalues(1)), delta * sqrt(eigenvalues(2)), delta * sqrt(eigenvalues(3)));
-        lmesh = surf(x, y, z, 'FaceAlpha', 0.05, 'EdgeAlpha', 0.00, 'FaceColor','cyan','EdgeColor','k');
+        lmesh = surf(x, y, z, 'FaceAlpha', 0.05, 'EdgeAlpha', 0.05, 'FaceColor','cyan','EdgeColor','k');
         
     %     checking if eigenvector matrix is I because axis angle rotation representation is undefined in that case 
         if not(isequal(V, eye(3)))
