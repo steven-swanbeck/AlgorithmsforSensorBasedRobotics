@@ -61,7 +61,7 @@ Algorithm performance:
 
 ---
 
-## Damped Least_Squares Inverse Kinematics
+## Damped Least-Squares Inverse Kinematics
 Algorithm performance:
 <p align="middle">
   <img src="/figures/dls_ik_Test1.png" width="350" />
