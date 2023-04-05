@@ -5,7 +5,7 @@ Associated with ME 397 Algorithms for Sensor-Based Robotics at UT Austin
 The examples shown here are for a Franka-Emika Panda robot, though the code is easily generalizable to any robot by adding the relevant parameters to instaniate_robot.m.
 
 <p align="middle">
-  <img src="/gifs/animation2.gif" width="700" /> 
+  <img src="/gifs/animation2.gif" width="500" /> 
 </p>
 
 ---
