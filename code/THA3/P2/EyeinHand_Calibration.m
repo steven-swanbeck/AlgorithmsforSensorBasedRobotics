@@ -1,0 +1,42 @@
+function [Tx, Px_all, A_cell, B_cell] = EyeinHand_Calibration(q_Robot_config, q_camera_config, t_Robot_config, t_camera_config)
+%UNTITLED7 Summary of this function goes here
+    
+    [A_quats, B_quats, A_cell, B_cell] = relative_motion_matrix(q_Robot_config, q_camera_config, t_Robot_config, t_camera_config);
+
+
+    [M_all] = M_set(A_quats, B_quats);
+    [U, S, V] = svd(M_all);
+    qx = V(:, end);
+    Rx = Quaternion2RotationMatrix(qx);
+
+%     start by making all the transformation matrices for the robot config,
+%     then solve ls problem
+
+    Px_all = zeros(3, size(A_quats, 1));
+%     A_cell = cell(1, size(q_Robot_config, 1));
+%     B_cell = cell(1, size(q_camera_config, 1));
+%     for i = 1:size(A_cell, 2)
+%         Ra = Quaternion2RotationMatrix(q_Robot_config(i, :));
+%         Pa = t_Robot_config(i, :);
+%         A_cell{i} = [Ra Pa'; zeros(1,3) 1];
+%     end
+%     for i = 1:size(B_cell, 2)
+%         Rb = Quaternion2RotationMatrix(q_camera_config(i, :));
+%         Pb = t_camera_config(i, :);
+%         B_cell{i} = [Rb Pb'; zeros(1,3) 1];
+%     end
+    
+    A = [];
+    b = [];
+    for i = 1:size(Px_all, 2)
+        temp = (A_cell{i}(1:3, 1:3) - eye(3));
+%         Px_all(:, i) = (temp'*temp) \ (temp'*(Rx * B_cell{i}(1:3, 4) - A_cell{i}(1:3, 4)));
+        Px_all(:, i) = pinv(temp) * (Rx * B_cell{i}(1:3, 4) - A_cell{i}(1:3, 4));
+        A = [A; A_cell{i}(1:3, 1:3) - eye(3)];
+        b = [b; Rx * B_cell{i}(1:3, 4) - A_cell{i}(1:3, 4)];
+    end
+    Px = lsqr(A, b);
+
+%     Px = zeros(3, 1);
+    Tx = [Rx Px; zeros(1, 3), 1];
+end

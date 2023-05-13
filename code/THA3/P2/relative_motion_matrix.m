@@ -1,0 +1,34 @@
+function [A_quats, B_quats, A_cell, B_cell] = relative_motion_matrix(q_Robot_config, q_camera_config, t_Robot_config, t_camera_config)
+%This function creates the A & B matrices as described on W12-L1 slide 16
+    A_cell = cell(1, size(q_Robot_config, 1)-1);
+    B_cell = cell(1, size(q_camera_config, 1)-1);
+    
+    A_quats = zeros(size(q_Robot_config, 1)-1, 4);
+    B_quats = zeros(size(q_camera_config, 1)-1, 4);
+
+    E_all = cell(1, size(q_Robot_config, 1));
+    S_all = cell(1, size(q_camera_config, 1));
+
+    for i = 1:size(E_all, 2)
+        Ra = Quaternion2RotationMatrix(q_Robot_config(i, :)/norm(q_Robot_config(i,:))); %Given quaternions are not perfectly normalized - must normalize to get real valued solution quaternions
+        Pa = t_Robot_config(i, :);
+        E_all{i} = [Ra Pa'; zeros(1,3) 1];
+    end
+    for i = 1:size(S_all, 2)
+        Rb = Quaternion2RotationMatrix(q_camera_config(i, :)/norm(q_camera_config(i,:))); %Given quaternions are not perfectly normalized - must normalize to get real valued solution quaternions
+        Pb = t_camera_config(i, :);
+        S_all{i} = [Rb Pb'; zeros(1,3) 1];
+    end
+    for i = 1:size(q_Robot_config, 1)-1
+        A_cell{i} = E_all{i} \ E_all{i+1};
+        B_cell{i} = S_all{i} / S_all{i+1};
+    end
+
+
+    for i = 1:size(A_cell, 2)
+        A_quats(i,:) = RotationMatrix2Quaternion(A_cell{i}(1:3,1:3));
+    end
+    for i = 1:size(B_cell, 2)
+        B_quats(i,:) = RotationMatrix2Quaternion(B_cell{i}(1:3,1:3));
+    end
+end
